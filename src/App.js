@@ -26,7 +26,7 @@ function App() {
     // to clear any previous errors
     setError(null);
     try {
-      const response = await fetch("https://swapi.dev/api/films/");
+      const response = await fetch("https://swapi.dev/api/film/");
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
@@ -47,17 +47,26 @@ function App() {
     setIsLoading(false);
   }
 
+  let content = <p>No movies found.</p>;
+
+  if (movies.length > 0) {
+    content = <MoviesList movies={movies} />;
+  }
+
+  if (isLoading) {
+    content = <p>Loading...</p>;
+  }
+
+  if (error) {
+    content = <p>{error}</p>;
+  }
+
   return (
     <React.Fragment>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
-      <section>
-        {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
-        {isLoading && <p>Loading...</p>}
-        {!isLoading && !error && movies.length === 0 && <p>No movies found.</p>}
-        {!isLoading && error && <p>{error}</p>}
-      </section>
+      <section>{content}</section>
     </React.Fragment>
   );
 }
